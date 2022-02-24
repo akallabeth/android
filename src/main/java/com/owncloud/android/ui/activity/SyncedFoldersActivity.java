@@ -30,6 +30,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.PowerManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -158,10 +159,6 @@ public class SyncedFoldersActivity extends FileActivity implements SyncedFolderA
 
         // TODO: The content loading should be done asynchronously
         setupContent();
-
-        if (ThemeUtils.themingEnabled(this)) {
-            setTheme(R.style.FallbackThemingTheme);
-        }
 
         binding.emptyList.emptyListViewAction.setOnClickListener(v -> showHiddenItems());
     }
@@ -626,9 +623,7 @@ public class SyncedFoldersActivity extends FileActivity implements SyncedFolderA
             && resultCode == RESULT_OK && syncedFolderPreferencesDialogFragment != null) {
             String localPath = data.getStringExtra(UploadFilesActivity.EXTRA_CHOSEN_FILES);
             syncedFolderPreferencesDialogFragment.setLocalFolderSummary(localPath);
-        } else if (requestCode == PermissionUtil.REQUEST_CODE_MANAGE_ALL_FILES) {
-            PermissionUtil.requestExternalStoragePermission(this, true); // will do nothing if already allowed
-        } else {
+        }  else {
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
@@ -781,17 +776,6 @@ public class SyncedFoldersActivity extends FileActivity implements SyncedFolderA
         } else {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        PermissionUtil.requestExternalStoragePermission(this, true);
     }
 
     private void showBatteryOptimizationInfo() {
